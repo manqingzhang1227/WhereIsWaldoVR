@@ -1,5 +1,5 @@
-#include "GlfwApp.h"
-#include "RiftManagerApp.h"
+#include "GlfwApp.hpp"
+#include "RiftManagerApp.hpp"
 #include "Core.h"
 
 

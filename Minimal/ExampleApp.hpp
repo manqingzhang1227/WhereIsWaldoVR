@@ -9,7 +9,10 @@
 
 
 #include "Core.h"
-#include "RiftApp.h"
+#include "RiftApp.hpp"
+#include "Scene.hpp"
+#include <GL/glew.h>
+
 
 // An example application that renders a simple cube
 class ExampleApp : public RiftApp {

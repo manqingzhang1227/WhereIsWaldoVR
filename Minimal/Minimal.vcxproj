@@ -89,6 +89,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)\Include\LibOVR;$(MSBuildThisFileDirectory)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>LibOVR.lib;opengl32.lib;glu32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -142,12 +143,12 @@
   <ItemGroup>
     <ClInclude Include="Core.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="ExampleApp.h" />
-    <ClInclude Include="GlfwApp.h" />
-    <ClInclude Include="ovr.h" />
-    <ClInclude Include="RiftApp.h" />
-    <ClInclude Include="RiftManagerApp.h" />
-    <ClInclude Include="Scene.h" />
+    <ClInclude Include="ExampleApp.hpp" />
+    <ClInclude Include="GlfwApp.hpp" />
+    <ClInclude Include="ovr.hpp" />
+    <ClInclude Include="RiftApp.hpp" />
+    <ClInclude Include="RiftManagerApp.hpp" />
+    <ClInclude Include="Scene.hpp" />
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

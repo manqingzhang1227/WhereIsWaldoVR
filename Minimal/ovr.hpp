@@ -11,6 +11,25 @@
 #include <OVR_CAPI.h>
 #include <OVR_CAPI_GL.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/noise.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+using glm::ivec3;
+using glm::ivec2;
+using glm::uvec2;
+using glm::mat3;
+using glm::mat4;
+using glm::vec2;
+using glm::vec3;
+using glm::vec4;
+using glm::quat;
+
 namespace ovr
 {
   // Convenience method for looping over each eye with a lambda
@@ -92,4 +111,4 @@ namespace ovr
   }
 }
 
-#endif //WHEREISWALDOVR_OVR_H
+#endif
