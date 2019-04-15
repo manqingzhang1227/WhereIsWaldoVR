@@ -2,10 +2,14 @@
 // Created by Manqing (Stefanie) Zhang on 2019-04-15.
 //
 
+
+
 #ifndef WHEREISWALDOVR_SCENE_H
 #define WHEREISWALDOVR_SCENE_H
 
-
+#include <vector>
+#include "shader.h"
+#include "Cube.h"
 // a class for building and rendering cubes
 class ColorCubeScene {
 

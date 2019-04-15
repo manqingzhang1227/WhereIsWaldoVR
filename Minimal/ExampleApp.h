@@ -2,8 +2,14 @@
 // Created by Manqing (Stefanie) Zhang on 2019-04-15.
 //
 
+
+
 #ifndef WHEREISWALDOVR_EXAMPLEAPP_H
 #define WHEREISWALDOVR_EXAMPLEAPP_H
+
+
+#include "Core.h"
+#include "RiftApp.h"
 
 // An example application that renders a simple cube
 class ExampleApp : public RiftApp {

@@ -1,5 +1,7 @@
 #include "GlfwApp.h"
 #include "RiftManagerApp.h"
+#include "Core.h"
+
 
 class RiftApp : public GlfwApp, public RiftManagerApp {
 public:

@@ -8,7 +8,8 @@
 
 // The Oculus VR C API provides access to information about the HMD
 
-
+#include <OVR_CAPI.h>
+#include <OVR_CAPI_GL.h>
 
 namespace ovr
 {

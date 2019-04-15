@@ -5,6 +5,8 @@
 #ifndef WHEREISWALDOVR_GLFWAPP_H
 #define WHEREISWALDOVR_GLFWAPP_H
 
+#include <GLFW/glfw3.h>
+
 namespace glfw
 {
   inline GLFWwindow* createWindow(const uvec2& size, const ivec2& position = ivec2(INT_MIN)) {

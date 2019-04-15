@@ -51,7 +51,7 @@
 #include "Cube.h"
 
 
-#include "ExampleApp.h
+#include "ExampleApp.h"
 #include "GlfwApp.h"
 #include "ovr.h"
 #include "RiftApp.h"

@@ -1,3 +1,6 @@
+#include "Core.h"
+
+
 class RiftManagerApp {
 protected:
   ovrSession _session;

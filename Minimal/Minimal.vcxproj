@@ -140,7 +140,14 @@
     <None Include="shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="ExampleApp.h" />
+    <ClInclude Include="GlfwApp.h" />
+    <ClInclude Include="ovr.h" />
+    <ClInclude Include="RiftApp.h" />
+    <ClInclude Include="RiftManagerApp.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
