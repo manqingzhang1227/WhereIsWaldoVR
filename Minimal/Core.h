@@ -50,4 +50,12 @@
 #include "shader.h"
 #include "Cube.h"
 
+
+#include "ExampleApp.h
+#include "GlfwApp.h"
+#include "ovr.h"
+#include "RiftApp.h"
+#include "RiftManagerApp.h"
+#include "Scene.h"
+
 #endif //WHEREISWALDOVR_CORE_H
