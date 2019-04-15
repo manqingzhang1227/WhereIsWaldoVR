@@ -17,30 +17,7 @@ limitations under the License.
 
 ************************************************************************************/
 
-#include <iostream>
-#include <memory>
-#include <exception>
-#include <algorithm>
-
-#include <Windows.h>
-
-#define __STDC_FORMAT_MACROS 1
-
-#define FAIL(X) throw std::runtime_error(X)
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// GLM is a C++ math library meant to mirror the syntax of GLSL 
-//
-
-#include <glm/glm.hpp>
-#include <glm/gtc/noise.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
+#include "Core.h"
 
 // Import the most commonly used types into the default namespace
 using glm::ivec3;
@@ -52,13 +29,6 @@ using glm::vec2;
 using glm::vec3;
 using glm::vec4;
 using glm::quat;
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// GLEW gives cross platform access to OpenGL 3.x+ functionality.  
-//
-
-#include <GL/glew.h>
 
 bool checkFramebufferStatus(GLenum target = GL_FRAMEBUFFER) {
   GLuint status = glCheckFramebufferStatus(target);
@@ -148,12 +118,29 @@ void glDebugCallbackHandler(GLenum source, GLenum type, GLuint id, GLenum severi
   std::cout << "debug call: " << msg << std::endl;
 }
 
+
+// Execute our example class
+int main(int argc, char** argv) {
+  int result = -1;
+
+  if (!OVR_SUCCESS(ovr_Initialize(nullptr))) {
+    FAIL("Failed to initialize the Oculus SDK");
+  }
+  result = ExampleApp().run();
+
+  ovr_Shutdown();
+  return result;
+}
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 //
 // GLFW provides cross platform window creation
 //
+/*
 
-#include <GLFW/glfw3.h>
 
 namespace glfw
 {
@@ -169,7 +156,9 @@ namespace glfw
   }
 }
 
+
 // A class to encapsulate using GLFW to handle input and render a scene
+
 class GlfwApp {
 
 protected:
@@ -280,9 +269,9 @@ protected:
     }
 
     switch (key) {
-    case GLFW_KEY_ESCAPE:
-      glfwSetWindowShouldClose(window, 1);
-      return;
+      case GLFW_KEY_ESCAPE:
+        glfwSetWindowShouldClose(window, 1);
+        return;
     }
   }
 
@@ -314,14 +303,13 @@ private:
   }
 };
 
+*/
 //////////////////////////////////////////////////////////////////////
 //
 // The Oculus VR C API provides access to information about the HMD
 //
 
-#include <OVR_CAPI.h>
-#include <OVR_CAPI_GL.h>
-
+/*
 namespace ovr
 {
   // Convenience method for looping over each eye with a lambda
@@ -401,8 +389,10 @@ namespace ovr
     result.w = q.w;
     return result;
   }
-}
+}*/
 
+
+/*
 class RiftManagerApp {
 protected:
   ovrSession _session;
@@ -584,7 +574,7 @@ protected:
   }
 
   virtual void renderScene(const glm::mat4& projection, const glm::mat4& headPose) = 0;
-};
+};*/
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -593,10 +583,8 @@ protected:
 // application would perform whatever rendering you want
 //
 
-#include <vector>
-#include "shader.h"
-#include "Cube.h"
 
+/*
 // a class for building and rendering cubes
 class ColorCubeScene {
 
@@ -643,7 +631,10 @@ public:
       cube->draw(shaderID, projection, view);
     }
   }
-};
+}; */
+
+
+/*
 
 // An example application that renders a simple cube
 class ExampleApp : public RiftApp {
@@ -669,17 +660,5 @@ protected:
   void renderScene(const glm::mat4& projection, const glm::mat4& headPose) override {
     cubeScene->render(projection, glm::inverse(headPose));
   }
-};
+};*/
 
-// Execute our example class
-int main(int argc, char** argv) {
-  int result = -1;
-
-  if (!OVR_SUCCESS(ovr_Initialize(nullptr))) {
-    FAIL("Failed to initialize the Oculus SDK");
-  }
-  result = ExampleApp().run();
-
-  ovr_Shutdown();
-  return result;
-}
