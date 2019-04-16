@@ -22,13 +22,13 @@ public:
 
   glm::mat4 toWorld;
 
-  void draw(GLuint shaderProgram, const glm::mat4& projection, const glm::mat4& view);
+  void draw(GLuint shaderProgram, const glm::mat4& projection, const glm::mat4& view, GLint isHighlighted);
   void update();
   void spin(float);
 
   // These variables are needed for the shader program
   GLuint vertexBuffer, normalBuffer, VAO;
-  GLuint uProjection, uModelview;
+  GLuint uProjection, uModelview, ubooleanHighlight;
 };
 
 #endif

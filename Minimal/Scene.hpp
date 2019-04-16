@@ -10,6 +10,12 @@
 #include <vector>
 #include "shader.h"
 #include "Cube.h"
+
+#include <random>
+#include <stdlib.h>     /* srand, rand */
+
+//const float GRID_SIZE{ 0.28f };
+
 // a class for building and rendering cubes
 class ColorCubeScene {
 
@@ -19,29 +25,35 @@ class ColorCubeScene {
   GLuint shaderID;
   std::unique_ptr<Cube> cube;
 
+  GLuint lightedInstanceIndex;
+
   const unsigned int GRID_SIZE{5};
+  const double SPACING{ 0.14 };
 
 public:
   ColorCubeScene() {
     // Create a cube of cubes
     {
-      for (unsigned int z = 0; z < GRID_SIZE; ++z) {
-        for (unsigned int y = 0; y < GRID_SIZE; ++y) {
-          for (unsigned int x = 0; x < GRID_SIZE; ++x) {
-            int xpos = (x - (GRID_SIZE / 2)) * 2;
-            int ypos = (y - (GRID_SIZE / 2)) * 2;
-            int zpos = (z - (GRID_SIZE / 2)) * 2;
-            vec3 relativePosition = vec3(xpos, ypos, zpos);
-            if (relativePosition == vec3(0)) {
-              continue;
-            }
-            instance_positions.push_back(glm::translate(glm::mat4(1.0f), relativePosition));
-          }
-        }
+	for (float z = 0; z < GRID_SIZE; z ++) {
+		for (float y = 0; y < GRID_SIZE; y ++) {
+			for (float x = 0; x < GRID_SIZE; x ++) {
+				float xpos = (x - (GRID_SIZE / 2.0f)) * SPACING;
+				float ypos = (y - (GRID_SIZE / 2.0f)) * SPACING;
+				float zpos = (z - (GRID_SIZE / 2.0f) ) *SPACING;
+				vec3 relativePosition = vec3(xpos, ypos, zpos);
+				if (relativePosition == vec3(0)) {
+				  continue;
+				}
+				glm::mat4 transfMat = glm::translate(glm::mat4(1.0f) , relativePosition) * glm::scale(glm::mat4(1.0f), vec3(0.035, 0.035, 0.035));
+				instance_positions.push_back(transfMat);
+			}
+		}
       }
     }
 
     instanceCount = instance_positions.size();
+	lightedInstanceIndex = rand() % instanceCount;         // in the range 0 to instanceCount
+
 
     // Shader Program
     shaderID = LoadShaders("shader.vert", "shader.frag");
@@ -50,10 +62,15 @@ public:
     cube = std::make_unique<Cube>();
   }
 
+  void highlightRandomSphere( ) {
+	  lightedInstanceIndex = rand() % instanceCount;         // in the range 0 to instanceCount
+  }
+
   void render(const glm::mat4& projection, const glm::mat4& view) {
+
     for (int i = 0; i < instanceCount; i++) {
       cube->toWorld = instance_positions[i] * glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
-      cube->draw(shaderID, projection, view);
+      cube->draw(shaderID, projection, view, (lightedInstanceIndex == i) );
     }
   }
 };

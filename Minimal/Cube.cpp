@@ -1,5 +1,5 @@
 #include "Cube.h"
-
+#include <iostream>
 // Define the coordinates and indices needed to draw the cube. Note that it is not necessary
 // to use a 2-dimensional array, since the layout in memory is the same as a 1-dimensional array.
 // This just looks nicer since it's easy to tell what coordinates/indices belong where.
@@ -158,7 +158,7 @@ Cube::~Cube() {
   glDeleteBuffers(1, &normalBuffer);
 }
 
-void Cube::draw(GLuint shaderProgram, const glm::mat4& projection, const glm::mat4& view) {
+void Cube::draw(GLuint shaderProgram, const glm::mat4& projection, const glm::mat4& view, GLint isHighlighted) {
   glUseProgram(shaderProgram);
   // Calculate the combination of the model and view (camera inverse) matrices
   glm::mat4 modelview = view * toWorld;
@@ -167,9 +167,19 @@ void Cube::draw(GLuint shaderProgram, const glm::mat4& projection, const glm::ma
   // Get the location of the uniform variables "projection" and "modelview"
   uProjection = glGetUniformLocation(shaderProgram, "projection");
   uModelview = glGetUniformLocation(shaderProgram, "modelview");
+  ubooleanHighlight = glGetUniformLocation(shaderProgram, "isHighlighted");
+
+  
   // Now send these values to the shader program
   glUniformMatrix4fv(uProjection, 1, GL_FALSE, &projection[0][0]);
   glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
+  
+  if (isHighlighted == 0) {
+	  glUniform1i(ubooleanHighlight, 0);
+  }
+  else {
+	  glUniform1i(ubooleanHighlight, 1);
+  }
   // Now draw the cube. We simply need to bind the VAO associated with it.
   glBindVertexArray(VAO);
   // Tell OpenGL to draw with triangles
