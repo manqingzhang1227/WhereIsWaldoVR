@@ -36,7 +36,25 @@ protected:
   }
 
   void renderScene(const glm::mat4& projection, const glm::mat4& headPose) override {
-    cubeScene->render(projection, glm::inverse(headPose));
+	// get the general state hmdState
+	double ftiming = ovr_GetPredictedDisplayTime(_session, 0);
+	ovrTrackingState hmdState = ovr_GetTrackingState(_session,
+		ftiming, ovrTrue);
+	// Get the state of hand poses
+	ovrPoseStatef handPoseState = hmdState.HandPoses[ovrHand_Right];
+	//Get the hand pose position.
+	glm::vec3 controllerPosition = ovr::toGlm(
+		handPoseState.ThePose.Position);
+
+	// Get Current Input State
+	ovrInputState inputState;
+	ovr_GetInputState(_session, ovrControllerType_Touch, &inputState);
+	if (inputState.IndexTrigger[ovrHand_Right] > 0.5f)
+	{
+		//std::cout << "Touched Trigger Button" << std::endl;
+		cubeScene->checkOverlap(controllerPosition);
+	}
+    cubeScene->render(projection, glm::inverse(headPose), controllerPosition);
   }
 };
 

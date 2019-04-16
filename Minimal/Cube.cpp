@@ -177,8 +177,11 @@ void Cube::draw(GLuint shaderProgram, const glm::mat4& projection, const glm::ma
   if (isHighlighted == 0) {
 	  glUniform1i(ubooleanHighlight, 0);
   }
-  else {
+  else if (isHighlighted == 1) {
 	  glUniform1i(ubooleanHighlight, 1);
+  }
+  else {
+	  glUniform1i(ubooleanHighlight, 2);
   }
   // Now draw the cube. We simply need to bind the VAO associated with it.
   glBindVertexArray(VAO);
