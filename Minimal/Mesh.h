@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
-#include "ShaderCustom.hpp"
+#include "shader.h"
 
 
 using namespace std;
@@ -40,6 +40,7 @@ public:
 	vector<unsigned int> indices;
 	vector<Texture> textures;
 	unsigned int VAO;
+	GLuint uProjection, uModelview, ubooleanHighlight;
 
 	/*  Functions  */
 	// constructor
@@ -51,10 +52,12 @@ public:
 
 		// now that we have all the required data, set the vertex buffers and its attribute pointers.
 		setupMesh();
+
+
 	}
 
 	// render the mesh
-	void Draw(ShaderCustom shader)
+	void Draw(GLuint shaderId, const glm::mat4& projection, const glm::mat4& view, const glm::mat4& toWorld, GLint isHighlighted)
 	{
 		// bind appropriate textures
 		unsigned int diffuseNr = 1;
@@ -77,13 +80,38 @@ public:
 				number = std::to_string(heightNr++); // transfer unsigned int to stream
 
 													 // now set the sampler to the correct texture unit
-			glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+			glUniform1i(glGetUniformLocation(shaderId, (name + number).c_str()), i);
 			// and finally bind the texture
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
 
 		// draw mesh
-		glUseProgram(shader.ID);
+		glUseProgram(shaderId);
+
+		// Calculate the combination of the model and view (camera inverse) matrices
+		glm::mat4 modelview = view * toWorld;
+		// We need to calcullate this because modern OpenGL does not keep track of any matrix other than the viewport (D)
+		// Consequently, we need to forward the projection, view, and model matrices to the shader programs
+		// Get the location of the uniform variables "projection" and "modelview"
+		uProjection = glGetUniformLocation(shaderId, "projection");
+		uModelview = glGetUniformLocation(shaderId, "modelview");
+		ubooleanHighlight = glGetUniformLocation(shaderId, "isHighlighted");
+
+
+		// Now send these values to the shader program
+		glUniformMatrix4fv(uProjection, 1, GL_FALSE, &projection[0][0]);
+		glUniformMatrix4fv(uModelview, 1, GL_FALSE, &modelview[0][0]);
+
+		if (isHighlighted == 0) {
+			glUniform1i(ubooleanHighlight, 0);
+		}
+		else if (isHighlighted == 1) {
+			glUniform1i(ubooleanHighlight, 1);
+		}
+		else {
+			glUniform1i(ubooleanHighlight, 2);
+		}
+
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
