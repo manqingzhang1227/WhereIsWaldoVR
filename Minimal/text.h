@@ -41,16 +41,19 @@ public:
   }
 
 
-  void
-  RenderText( Shader &s, std::string text, GLfloat x, GLfloat y, GLfloat scale,
-              glm::vec3 color ) {
+  void RenderText( GLuint shaderId, std::string text,
+     GLfloat scale, glm::vec3 color ) {
     // Activate corresponding render state
-    s.Use();
+    //s.Use();
+
+    glUseProgram(shaderId);
+
     glUniform3f( glGetUniformLocation( s.Program, "textColor" ), color.x,
                  color.y, color.z );
     glActiveTexture( GL_TEXTURE0 );
     glBindVertexArray( VAO );
 
+    GLfloat x, GLfloat y;//TODO delete
     // Iterate through all characters
     std::string::const_iterator c;
     for( c = text.begin(); c != text.end(); c++ ) {
