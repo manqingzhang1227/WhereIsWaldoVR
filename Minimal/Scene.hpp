@@ -133,7 +133,7 @@ public:
       glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
     sphere->Draw( shaderID, projection, view, controller_transform, 2 );
 
-    text->RenderText( textShaderID, new string("TEXT"), ,  )
+    text->RenderText( textShaderID, new string("TEXT") );
     //render the text
 
   }

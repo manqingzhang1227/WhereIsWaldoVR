@@ -41,19 +41,23 @@ public:
   }
 
 
-  void RenderText( GLuint shaderId, std::string text,
-     GLfloat scale, glm::vec3 color ) {
+  void RenderText( GLuint shaderId, std::string text) {
     // Activate corresponding render state
     //s.Use();
 
     glUseProgram(shaderId);
 
-    glUniform3f( glGetUniformLocation( s.Program, "textColor" ), color.x,
-                 color.y, color.z );
+    //glUniform3f( glGetUniformLocation( s.Program, "textColor" ), color.x,
+                 //color.y, color.z );
     glActiveTexture( GL_TEXTURE0 );
     glBindVertexArray( VAO );
 
-    GLfloat x, GLfloat y;//TODO delete
+
+    ///TODO delete
+    GLfloat x, GLfloat y, GLfloat z,GLfloat scale ;
+    x = 0; y = 5; z = 0;
+    scale = 1;
+
     // Iterate through all characters
     std::string::const_iterator c;
     for( c = text.begin(); c != text.end(); c++ ) {
@@ -62,6 +66,7 @@ public:
       GLfloat xpos = x + ch.Bearing.x * scale;
       //offset ypos below the baseline
       GLfloat ypos = y - ( ch.Size.y - ch.Bearing.y ) * scale;
+      GLfloat zpos = z;
 
       GLfloat w = ch.Size.x * scale;
       GLfloat h = ch.Size.y * scale;
