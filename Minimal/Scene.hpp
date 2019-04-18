@@ -18,10 +18,10 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <soil.h>
 
-#include "Mesh.h"
 #include "Model.h"
+
+#include <soil.h>
 
 //#include "text.h"
 
@@ -153,9 +153,9 @@ class ColorCubeScene {
   GLuint instanceCount;
 
 
-  GLuint shaderID, textureShaderID;
+  GLuint shaderID, textureShaderID, textureId;
 
-  GLint uniform_texture;
+  GLint uniform_texture,attribute_texture;
 
   Model* sphere;
 
@@ -206,11 +206,10 @@ public:
 	textureShaderID = LoadShaders("textureShader.vert", "textureShader.frag");
 
 	glActiveTexture(GL_TEXTURE0);
-	GLuint textureId = SOIL_load_OGL_texture("Waldo.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS);
+	textureId = SOIL_load_OGL_texture("Waldo.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS);
+	uniform_texture = glGetUniformLocation(textureShaderID, "texture"); 
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	glUniform1i()
-
-
+	glEnable(GL_TEXTURE_2D);
   }
 
 
@@ -246,8 +245,13 @@ public:
     for( int i = 0; i < instanceCount; i++ ) {
       glm::mat4 toWorld = instance_positions[i] *
                           glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
-      sphere->Draw( shaderID, projection, view, toWorld,
-                    ( lightedInstanceIndex == i ) );
+	  if (lightedInstanceIndex == i) {
+		  sphere->Draw(textureShaderID, projection, view, toWorld, (lightedInstanceIndex == i));
+	  }
+	  else {
+		  sphere->Draw(shaderID, projection, view, toWorld,
+			  (lightedInstanceIndex == i));
+	  }
     }
     glm::mat4 controller_transform =
       glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
