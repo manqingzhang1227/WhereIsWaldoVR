@@ -21,7 +21,7 @@ struct Vertex {
   // normal
   glm::vec3 Normal;
   // texCoords
-//  glm::vec2 TexCoords;
+  glm::vec2 TexCoords;
 //  // tangent
 //  glm::vec3 Tangent;
 //  // bitangent
@@ -140,7 +140,7 @@ public:
 
 private:
   /*  Render data  */
-  unsigned int VBO, EBO;
+  unsigned int  VBO, EBO;
 
   /*  Functions    */
   // initializes all the buffer objects/arrays

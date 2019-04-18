@@ -41,10 +41,8 @@ class ColorSphereSceneWithText {
   Model* sphere;
 
 
-  GLuint textShaderID;
 
 
-  Text* text;
 
 
   GLuint lightedInstanceIndex;
@@ -80,15 +78,13 @@ public:
     }
 
 
-    instanceCount = instance_positions.size();
+    instanceCount = (GLuint)instance_positions.size();
     lightedInstanceIndex = rand() % instanceCount;
     // in the range 0 to instanceCount
 
-
-    // Shader Program
-    shaderID = LoadShaders( "shader.vert", "shader.frag" );
-
-    textShaderID = LoadShaders( "textShader.vert", "textShader.frag" );
+		// Shader Program
+	shaderID = LoadShaders("shader.vert", "shader.frag");
+   
 
   }
 
@@ -123,14 +119,14 @@ public:
                const glm::vec3 &controllerPosition ) {
 
     //render the spheres chunk
-/*
+
     for( int i = 0; i < instanceCount; i++ ) {
       glm::mat4 toWorld = instance_positions[i] *
                           glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
       sphere->Draw( shaderID, projection, view, toWorld,
                     ( lightedInstanceIndex == i ) );
     }
-    */
+    
 
     //render the controller sphere
     glm::mat4 controller_transform =
@@ -139,11 +135,8 @@ public:
     sphere->Draw( shaderID, projection, view, controller_transform, 2 );
 
 
-    //render the text
-    glm::mat4 toWorld = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.0f, 5.0f )  );
+    
 
-    text->RenderText( textShaderID, new string("TEXT"), 0.0f, 0.0f, 1.0f,
-                      projection, view, toWorld );
   }
 
 
@@ -201,7 +194,7 @@ public:
       }
     }
 
-    instanceCount = instance_positions.size();
+    instanceCount = (GLuint) instance_positions.size();
     lightedInstanceIndex =
       rand() % instanceCount;         // in the range 0 to instanceCount
 
@@ -241,7 +234,7 @@ public:
   void render( const glm::mat4 &projection, const glm::mat4 &view,
                const glm::vec3 &controllerPosition ) {
 
-    for( int i = 0; i < instanceCount; i++ ) {
+    for( unsigned int i = 0; i < instanceCount; i++ ) {
       glm::mat4 toWorld = instance_positions[i] *
                           glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
       sphere->Draw( shaderID, projection, view, toWorld,

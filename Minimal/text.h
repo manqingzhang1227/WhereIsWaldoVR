@@ -20,18 +20,18 @@
 
 using namespace std;
 
-struct Vertex {
-  // position
-  glm::vec3 Position;
-  // texCoords
-  glm::vec2 TexCoords;
-};
+
 
 
 class Text {
 public:
 
   GLuint uProjection, uModelview, ubooleanHighlight;
+  GLuint VAO;
+  FT_Face face;
+  FT_Library ft;
+
+
 
   /*  Functions  */
   // constructor
@@ -40,54 +40,56 @@ public:
     setUpFace();
     loadFirst128Chars();
     finishSetUpFace();
+	setUpTextModels();
   }
 
+  
 
   void RenderText( GLuint shaderId, std::string text,
-                   GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color,
+                   GLfloat x, GLfloat y, GLfloat scale, 
                    const glm::mat4& projection, const glm::mat4& view,
                    const glm::mat4& toWorld) {
     // Activate corresponding render state
     //s.Use();
 
-    glUseProgram(shaderId);
+  
 
     // Calculate the combination of the model and view (camera inverse) matrices
     glm::mat4 modelview = view * toWorld;
 
-    // Get the location of the uniform variables "projection"
+	glUseProgram(shaderId);
     uProjection = glGetUniformLocation( shaderId, "projection" );
-    // Now send these values to the shader program
     glUniformMatrix4fv( uProjection, 1, GL_FALSE, &projection[0][0] );
 
-//    glUniform3f( glGetUniformLocation( s.Program, "textColor" ), color.x,
-//                 color.y, color.z );
+//    glUniform3f( glGetUniformLocation( s.Program, "textColor" ), color.x,  color.y, color.z );
     glActiveTexture( GL_TEXTURE0 );
     glBindVertexArray( VAO );
 
     // Iterate through all characters
-    std::string::const_iterator c;
+    std::string::const_iterator c;	
+
     for( c = text.begin(); c != text.end(); c++ ) {
       Character ch = Characters[*c];
 
       GLfloat xpos = x + ch.Bearing.x * scale;
       //offset ypos below the baseline
       GLfloat ypos = y - ( ch.Size.y - ch.Bearing.y ) * scale;
+	  //std::cout << "x: " << xpos << "\typos: " << ypos << std::endl;
 
       GLfloat w = ch.Size.x * scale;
       GLfloat h = ch.Size.y * scale;
       // Update VBO for each character
       GLfloat vertices[6][4] = {
         { xpos,     ypos + h, 0.0, 0.0 },
-        { xpos,     ypos,     0.0, 1.0 },
-        { xpos + w, ypos,     1.0, 1.0 },
+        { xpos,     ypos,    0.0, 1.0 },
+        { xpos + w, ypos,    1.0, 1.0 },
 
-        { xpos,     ypos + h, 0.0, 0.0 },
-        { xpos + w, ypos,     1.0, 1.0 },
+        { xpos,     ypos + h,0.0, 0.0 },
+        { xpos + w, ypos,    1.0, 1.0 },
         { xpos + w, ypos + h, 1.0, 0.0 }
       };
       // Render glyph texture over quad
-      glBindTexture( GL_TEXTURE_2D, ch.textureID );
+      glBindTexture( GL_TEXTURE_2D, ch.TextureID);
       // Update content of VBO memory
       glBindBuffer( GL_ARRAY_BUFFER, VBO );
       glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof( vertices ), vertices );
@@ -95,8 +97,7 @@ public:
       // Render quad
       glDrawArrays( GL_TRIANGLES, 0, 6 );
       // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-      x += ( ch.Advance >> 6 ) *
-           scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
+      x += ( ch.Advance >> 6 ) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
     }
     glBindVertexArray( 0 );
     glBindTexture( GL_TEXTURE_2D, 0 );
@@ -113,7 +114,6 @@ private:
     GLuint Advance;    // Offset to advance to next glyph
   };
 
-
   std::map <GLchar, Character> Characters;
 
 
@@ -125,21 +125,19 @@ private:
   void setUpFace() {
 
     //text
-    FT_Library ft;
     if( FT_Init_FreeType( &ft ) )
       std::cout << "ERROR::FREETYPE: Could not init FreeType Library"
                 << std::endl;
 
-    FT_Face face;
-    if( FT_New_Face( ft, "fonts/arial.ttf", 0, &face ) )
+    if( FT_New_Face( ft, "arial.ttf", 0, &face ) )
       std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 
-    FT_Set_Pixel_Sizes( face, 0, 48 );
+    FT_Set_Pixel_Sizes( face, 0, 480 );
 
   }
 
 
-  //load the first 128 characters of the ASCII character set.
+  //load the first 128 characters of the ASCII chaFracter set.
   void loadFirst128Chars() {
     // Disable byte-alignment restriction
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
@@ -149,9 +147,12 @@ private:
     // all data required to render each character is stored for later use.
     for( GLubyte c = 0; c < 128; c++ ) {
       // Load character glyph
-      if( FT_Load_Char( face, c, FT_LOAD_RENDER ) ) {
-        std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-        continue;
+		int errorCode = FT_Load_Char(face, c, FT_LOAD_RENDER);
+      if(errorCode) {
+		  std::cout << errorCode << std::endl;
+		  
+		  //std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+		  continue;
       }
       // Generate texture
       GLuint texture;
@@ -195,7 +196,6 @@ private:
 
 
     // Configure VAO/VBO for texture quads
-    GLuint VAO, VBO;
     glGenVertexArrays( 1, &VAO );
     glGenBuffers( 1, &VBO );
     glBindVertexArray( VAO );
@@ -210,14 +210,14 @@ private:
     glEnableVertexAttribArray( 0 );
 
     // vertex Positions
-    glEnableVertexAttribArray( 0 );
-    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), ( void* ) 0 );
+    //glEnableVertexAttribArray( 0 );
+   // glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), ( void* ) 0 );
 
     // vertex texture coords
-    glEnableVertexAttribArray( 1 );
-    glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ),
-                           ( void* ) offsetof( Vertex, TexCoords ) );
+    //glEnableVertexAttribArray( 1 );
+    //glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ), ( void* ) offsetof( Vertex, TexCoords ) );
 
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
     glBindVertexArray( 0 );
   }
