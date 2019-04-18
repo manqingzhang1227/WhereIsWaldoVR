@@ -23,6 +23,8 @@
 
 #include <soil.h>
 
+#include "stb_image.h"
+
 //#include "text.h"
 
 
@@ -206,10 +208,29 @@ public:
 	textureShaderID = LoadShaders("textureShader.vert", "textureShader.frag");
 
 	glActiveTexture(GL_TEXTURE0);
-	textureId = SOIL_load_OGL_texture("Waldo.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS);
-	uniform_texture = glGetUniformLocation(textureShaderID, "texture"); 
+
+	//Setting up textures
+	unsigned char * data;
+	int width, height, numChannels;
+
+	data = stbi_load("waldo.jpg", &width, &height, &numChannels, STBI_rgb_alpha);
+	if (!data) {
+	  throw std::runtime_error("Cannot load file waldo.jpg");
+	}
+
+	glGenTextures(1, &textureId);
 	glBindTexture(GL_TEXTURE_2D, textureId);
-	glEnable(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	// textureId = SOIL_load_OGL_texture("waldo.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	uniform_texture = glGetUniformLocation(textureShaderID, "tex"); 
+	glUniform1i(uniform_texture, 0);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	
   }
 
 
