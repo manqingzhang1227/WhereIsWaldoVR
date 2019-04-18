@@ -39,7 +39,7 @@ protected:
     ovr_RecenterTrackingOrigin( _session );
     //cubeScene = std::shared_ptr <ColorCubeScene>( new ColorCubeScene() );
     cubeScene = std::shared_ptr <ColorCubeScene>(
-      new ColorSphereSceneWithText );
+      new ColorCubeScene() );
   }
 
 

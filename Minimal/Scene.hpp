@@ -18,11 +18,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <soil.h>
 
 #include "Mesh.h"
 #include "Model.h"
 
-#include "text.h"
+//#include "text.h"
 
 
 // a class for building and rendering cubes
@@ -44,7 +45,7 @@ class ColorSphereSceneWithText {
   GLuint textShaderID;
 
 
-  Text* text;
+  //Text* text;
 
 
   GLuint lightedInstanceIndex;
@@ -88,7 +89,7 @@ public:
     // Shader Program
     shaderID = LoadShaders( "shader.vert", "shader.frag" );
 
-    textShaderID = LoadShaders( "textShader.vert", "textShader.frag" );
+    //textShaderID = LoadShaders( "textShader.vert", "textShader.frag" );
 
   }
 
@@ -133,7 +134,7 @@ public:
       glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
     sphere->Draw( shaderID, projection, view, controller_transform, 2 );
 
-    text->RenderText( textShaderID, new string("TEXT") );
+    //text->RenderText( textShaderID, new string("TEXT") );
     //render the text
 
   }
@@ -152,8 +153,9 @@ class ColorCubeScene {
   GLuint instanceCount;
 
 
-  GLuint shaderID;
+  GLuint shaderID, textureShaderID;
 
+  GLint uniform_texture;
 
   Model* sphere;
 
@@ -200,6 +202,14 @@ public:
 
     // Shader Program
     shaderID = LoadShaders( "shader.vert", "shader.frag" );
+
+	textureShaderID = LoadShaders("textureShader.vert", "textureShader.frag");
+
+	glActiveTexture(GL_TEXTURE0);
+	GLuint textureId = SOIL_load_OGL_texture("Waldo.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glUniform1i()
+
 
   }
 
