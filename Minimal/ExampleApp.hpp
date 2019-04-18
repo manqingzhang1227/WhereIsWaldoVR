@@ -91,8 +91,8 @@ protected:
 
 	if (!gameStarted && !justStarted) {
 		string gameOver = "Game Over! You got " + std::to_string(points) + " points.";
-		text->RenderText(textShaderID, gameOver, 350.0f, 300.0f, 0.05f,
-			proj, glm::inverse(headPose), toWorld);
+//		text->RenderText(textShaderID, gameOver, 350.0f, 300.0f, 0.05f,
+//			proj, glm::inverse(headPose), toWorld);
 	}
     // get the general state hmdState
     double ftiming = ovr_GetPredictedDisplayTime( _session, 0 );
@@ -122,8 +122,8 @@ protected:
 
 	if (ovr_GetTimeInSeconds() - timeReference > 5.0  && inputState.IndexTrigger[ovrHand_Right] > 0.5f) {
 		string onePointAdded = "1 Point Added";
-		text->RenderText(textShaderID, onePointAdded, 350.0f, 200.0, 0.05f,
-			proj, glm::inverse(headPose), toWorld);
+//		text->RenderText(textShaderID, onePointAdded, 350.0f, 200.0, 0.05f,
+//			proj, glm::inverse(headPose), toWorld);
 		timeReference = ovr_GetTimeInSeconds();
 
 	}
@@ -132,12 +132,12 @@ protected:
 
 
 		string score = "Current score: " + std::to_string(points) + ".";
-		text->RenderText(textShaderID, score, 350.0f, 400.0, 0.05f,
-			proj, glm::inverse(headPose), toWorld);
+//		text->RenderText(textShaderID, score, 350.0f, 400.0, 0.05f,
+//			proj, glm::inverse(headPose), toWorld);
 
 		string timeLeft = "You have " + std::to_string(int(60 - (ovr_GetTimeInSeconds() - startTime))) + " seconds left.";
-		text->RenderText(textShaderID, timeLeft, 350.0f, 300.0f, 0.05f,
-			proj, glm::inverse(headPose), toWorld);
+//		text->RenderText(textShaderID, timeLeft, 350.0f, 300.0f, 0.05f,
+//			proj, glm::inverse(headPose), toWorld);
 	}
 
     cubeScene->render( projection, glm::inverse( headPose ),
