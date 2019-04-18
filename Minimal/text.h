@@ -20,6 +20,13 @@
 
 using namespace std;
 
+struct Vertex {
+  // position
+  glm::vec3 Position;
+  // texCoords
+  glm::vec2 TexCoords;
+};
+
 
 class Text {
 public:
@@ -33,30 +40,30 @@ public:
     setUpFace();
     loadFirst128Chars();
     finishSetUpFace();
-
-    // now that we have all the required data, set the vertex buffers and its attribute pointers.
-    //setupMesh();
-
-
   }
 
 
-  void RenderText( GLuint shaderId, std::string text) {
+  void RenderText( GLuint shaderId, std::string text,
+                   GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color,
+                   const glm::mat4& projection, const glm::mat4& view,
+                   const glm::mat4& toWorld) {
     // Activate corresponding render state
     //s.Use();
 
     glUseProgram(shaderId);
 
-    //glUniform3f( glGetUniformLocation( s.Program, "textColor" ), color.x,
-                 //color.y, color.z );
+    // Calculate the combination of the model and view (camera inverse) matrices
+    glm::mat4 modelview = view * toWorld;
+
+    // Get the location of the uniform variables "projection"
+    uProjection = glGetUniformLocation( shaderId, "projection" );
+    // Now send these values to the shader program
+    glUniformMatrix4fv( uProjection, 1, GL_FALSE, &projection[0][0] );
+
+//    glUniform3f( glGetUniformLocation( s.Program, "textColor" ), color.x,
+//                 color.y, color.z );
     glActiveTexture( GL_TEXTURE0 );
     glBindVertexArray( VAO );
-
-
-    ///TODO delete
-    GLfloat x, GLfloat y, GLfloat z,GLfloat scale ;
-    x = 0; y = 5; z = 0;
-    scale = 1;
 
     // Iterate through all characters
     std::string::const_iterator c;
@@ -66,7 +73,6 @@ public:
       GLfloat xpos = x + ch.Bearing.x * scale;
       //offset ypos below the baseline
       GLfloat ypos = y - ( ch.Size.y - ch.Bearing.y ) * scale;
-      GLfloat zpos = z;
 
       GLfloat w = ch.Size.x * scale;
       GLfloat h = ch.Size.y * scale;
@@ -94,6 +100,7 @@ public:
     }
     glBindVertexArray( 0 );
     glBindTexture( GL_TEXTURE_2D, 0 );
+
   }
 
 
@@ -186,8 +193,6 @@ private:
     glEnable( GL_BLEND );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-    //TODO
-    glm::mat4 projection = glm::ortho( 0.0f, 800.0f, 0.0f, 600.0f );
 
     // Configure VAO/VBO for texture quads
     GLuint VAO, VBO;
@@ -195,13 +200,24 @@ private:
     glGenBuffers( 1, &VBO );
     glBindVertexArray( VAO );
     glBindBuffer( GL_ARRAY_BUFFER, VBO );
+
     //The 2D quad requires 6 vertices of 4 floats each so we reserve 6 * 4
     //floats of memory. Because we'll be updating the content of the VBO's
     //memory quite often we'll allocate the memory with GL_DYNAMIC_DRAW.
     glBufferData( GL_ARRAY_BUFFER, sizeof( GLfloat ) * 6 * 4, NULL,
                   GL_DYNAMIC_DRAW );
+
     glEnableVertexAttribArray( 0 );
-    glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof( GLfloat ), 0 );
+
+    // vertex Positions
+    glEnableVertexAttribArray( 0 );
+    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), ( void* ) 0 );
+
+    // vertex texture coords
+    glEnableVertexAttribArray( 1 );
+    glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ),
+                           ( void* ) offsetof( Vertex, TexCoords ) );
+
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
     glBindVertexArray( 0 );
   }

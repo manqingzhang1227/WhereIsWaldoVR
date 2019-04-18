@@ -122,20 +122,28 @@ public:
   void render( const glm::mat4 &projection, const glm::mat4 &view,
                const glm::vec3 &controllerPosition ) {
 
+    //render the spheres chunk
+/*
     for( int i = 0; i < instanceCount; i++ ) {
       glm::mat4 toWorld = instance_positions[i] *
                           glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
       sphere->Draw( shaderID, projection, view, toWorld,
                     ( lightedInstanceIndex == i ) );
     }
+    */
+
+    //render the controller sphere
     glm::mat4 controller_transform =
       glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
       glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
     sphere->Draw( shaderID, projection, view, controller_transform, 2 );
 
-    text->RenderText( textShaderID, new string("TEXT") );
-    //render the text
 
+    //render the text
+    glm::mat4 toWorld = glm::translate( glm::mat4( 1.0f ), glm::vec3( 0.0f, 0.0f, 5.0f )  );
+
+    text->RenderText( textShaderID, new string("TEXT"), 0.0f, 0.0f, 1.0f,
+                      projection, view, toWorld );
   }
 
 
