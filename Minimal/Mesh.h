@@ -108,8 +108,11 @@ public:
 		else if (isHighlighted == 1) {
 			glUniform1i(ubooleanHighlight, 1);
 		}
+    else if (isHighlighted == 2) {
+      glUniform1i(ubooleanHighlight, 2);
+    }
 		else {
-			glUniform1i(ubooleanHighlight, 2);
+			glUniform1i(ubooleanHighlight, -1);
 		}
 
 

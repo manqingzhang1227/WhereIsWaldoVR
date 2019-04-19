@@ -32,7 +32,7 @@ void main()
 	}
 
 	if( isHighlighted == -1) {
-		color = vec3(1,0,0);
+		color = vec3(1,0.6,0.6);
 	}
 
     fragColor = vec4(color, 1.0);
