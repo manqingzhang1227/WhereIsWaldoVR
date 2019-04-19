@@ -33,6 +33,10 @@
     <None Include="shader.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="textShader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="textShader.vert">
     <None Include="textureShader.frag">
       <Filter>Resource Files</Filter>
     </None>
@@ -77,11 +81,15 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\ft2build.h">
+    <ClInclude Include="text.h">
+
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Font Include="arial.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
     <Image Include="waldo.jpg">
       <Filter>Resource Files</Filter>
     </Image>
