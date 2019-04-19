@@ -209,7 +209,7 @@ public:
     loadGameOver();
 
     loadGameStart();
-    //loadNumbers();
+    loadNumbers();
 
     // Create a cube of cubes
     {
@@ -298,37 +298,7 @@ public:
   }
 
 
-  void renderNumber( const glm::mat4 &projection, const glm::mat4 &view,
-                     const glm::vec3 &controllerPosition, int numToRender ) {
-//	  string tenth, one;
-//	  if (status == 1) {
-//		  tenth = std::to_string(timeLeft / 10);
-//		  one = std::to_string(timeLeft % 10);
-//	  }
-//	  else if (status == 2) {
-//		  tenth = std::to_string(score / 10);
-//		  one = std::to_string(score % 10);
-//	  }
-    glm::mat4 NumberTransform = numPos
-                                * glm::translate( glm::mat4( 1.0f ), vec3( 3.5, -13, 1 ) )
-                                * glm::scale( glm::mat4( 1.0f ), vec3( 20, 20, 1 ) )
-                                * glm::translate( glm::mat4( 1.0f ), vec3( -0.5, 1, -10 ) )
-                                * glm::scale( glm::mat4( 1.0f ), vec3( 0.01 ) )
-                                * glm::rotate( glm::mat4( 1.0f ), glm::radians( -90.0f ),
-                                               vec3( 0, 0, 1 ) );
-
-    int tenthIndex = numToRender / 10;
-    int oneIndex = numToRender % 10;
-    //TODO start here, render accordigng to the number, remember to call this
-    // func in render()
-
-    nums[tenthIndex]->Draw( GameOverShaderID, projection, view, NumberTransform, -1 );
-
-    NumberTransform = NumberTransform
-                      * glm::translate( glm::mat4( 1.0f ), vec3( 10, 0, 0 ) );
-    nums[oneIndex]->Draw( GameOverShaderID, projection, view, NumberTransform, -1 );
-  }
-
+  
 
   void render( const glm::mat4 &projection, const glm::mat4 &view,
                const glm::vec3 &controllerPosition, int status, int timeLeft, int score ) {
@@ -368,10 +338,12 @@ public:
   }
 
 
+
   void loadNumbers() {
 
     for( unsigned int i = 0; i < 10; i++ ) {
       string fileName = "Number" + std::to_string( i ) + ".obj";
+	  std::cout << fileName << std::endl;
       nums.push_back( new Model( fileName ) );
 
     }
@@ -482,7 +454,7 @@ public:
                            const glm::vec3 &controllerPosition ) {
     glm::mat4 gameOverTransform =
       gameOverPos
-      * glm::translate( glm::mat4( 1.0f ), vec3( 3.5, -13, 1 ) )
+      * glm::translate( glm::mat4( 1.0f ), vec3( 3.5, -15, -2 ) )
       * glm::scale( glm::mat4( 1.0f ), vec3( 20, 20, 1 ) )
       * glm::translate( glm::mat4( 1.0f ), vec3( -0.5, 1, -10 ) )
       * glm::scale( glm::mat4( 1.0f ), vec3( 0.01 ) )
@@ -535,6 +507,38 @@ public:
       glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
       glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
     sphere->Draw( shaderID, projection, view, controller_transform, 2 );
+  }
+
+
+  void renderNumber(const glm::mat4 &projection, const glm::mat4 &view,
+	  const glm::vec3 &controllerPosition, int numToRender) {
+	  //	  string tenth, one;
+	  //	  if (status == 1) {
+	  //		  tenth = std::to_string(timeLeft / 10);
+	  //		  one = std::to_string(timeLeft % 10);
+	  //	  }
+	  //	  else if (status == 2) {
+	  //		  tenth = std::to_string(score / 10);
+	  //		  one = std::to_string(score % 10);
+	  //	  }
+	  glm::mat4 NumberTransform = numPos
+		  * glm::translate(glm::mat4(1.0f), vec3(0, -3, -10))
+		  * glm::scale(glm::mat4(1.0f), vec3(10, 10, 1))
+		  * glm::translate(glm::mat4(1.0f), vec3(-0.5, 1, -10))
+		  * glm::scale(glm::mat4(1.0f), vec3(0.01))
+		  * glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f),
+			  vec3(0, 0, 1));
+
+	  int tenthIndex = numToRender / 10;
+	  int oneIndex = numToRender % 10;
+	  //TODO start here, render accordigng to the number, remember to call this
+	  // func in render()
+
+	  nums[tenthIndex]->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
+
+	  NumberTransform = NumberTransform
+		  * glm::translate(glm::mat4(1.0f), vec3(0, 25, 0));
+	  nums[oneIndex]->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
   }
 
 

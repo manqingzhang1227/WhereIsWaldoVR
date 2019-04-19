@@ -116,7 +116,7 @@ protected:
 	//std::cout << "Current score: " << points << "." << std::endl;
 
     cubeScene->render( projection, glm::inverse( headPose ),
-                       controllerPosition, gameStatus, (int)(MAX_TIME_PER_GAME - (ovr_GetTimeInSeconds() - startTime), points);
+                       controllerPosition, gameStatus, (int)(MAX_TIME_PER_GAME - (ovr_GetTimeInSeconds() - startTime)), points);
 
   }
 };
