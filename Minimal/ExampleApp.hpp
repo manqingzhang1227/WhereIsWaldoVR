@@ -25,7 +25,7 @@ class ExampleApp : public RiftApp {
 
 
   int gameStatus;
-  const unsigned int MAX_TIME_PER_GAME{ 5 };
+  const unsigned int MAX_TIME_PER_GAME{ 60 };
 
 public:
   ExampleApp() {
