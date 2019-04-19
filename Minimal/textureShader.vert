@@ -7,16 +7,14 @@
 uniform mat4 projection;
 uniform mat4 modelview;
 
-attribute vec3 v_coord;
+in vec3 position;
 
 // You can output many things. The first vec4 type output determines the color of the fragment
-varying vec3 textureCoord
-
-
-
+out vec2 textureCoord;
 
 void main()
 {
-	gl_Position = projection * modelview * vec4(v_coord, 1.0);
-	textureCoord = vec4(v_coord, 1.0);
+	gl_Position = projection * modelview * vec4(position, 1.0);
+	textureCoord = vec2((atan(position.y, position.x) / 3.1415926 + 1.0) * 0.5,
+                                  (asin(position.z) / 3.1415926 + 0.5));
 }

@@ -60,7 +60,7 @@ public:
 	void Draw(GLuint shaderId, const glm::mat4& projection, const glm::mat4& view, const glm::mat4& toWorld, GLint isHighlighted)
 	{
 		// bind appropriate textures
-		unsigned int diffuseNr = 1;
+		/*unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
 		unsigned int normalNr = 1;
 		unsigned int heightNr = 1;
@@ -83,7 +83,7 @@ public:
 			glUniform1i(glGetUniformLocation(shaderId, (name + number).c_str()), i);
 			// and finally bind the texture
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
-		}
+		}*/
 
 		// draw mesh
 		glUseProgram(shaderId);
@@ -111,6 +111,7 @@ public:
 		else {
 			glUniform1i(ubooleanHighlight, 2);
 		}
+
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
