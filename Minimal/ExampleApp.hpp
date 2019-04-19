@@ -10,7 +10,7 @@
 
 // An example application that renders a simple cube
 class ExampleApp : public RiftApp {
-  std::shared_ptr <ColorSphereSceneWithText> cubeScene;
+  std::shared_ptr <GameOverScene> cubeScene;
 
 
   bool gameStarted;
@@ -50,8 +50,8 @@ protected:
     glEnable( GL_DEPTH_TEST );
     ovr_RecenterTrackingOrigin( _session );
     //cubeScene = std::shared_ptr <ColorCubeScene>( new ColorCubeScene() );
-    cubeScene = std::shared_ptr <ColorSphereSceneWithText>(
-      new ColorSphereSceneWithText );
+    cubeScene = std::shared_ptr <GameOverScene>(
+      new GameOverScene);
 	textShaderID = LoadShaders("textShader.vert", "textShader.frag");
 	text = new Text();
 	proj = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);

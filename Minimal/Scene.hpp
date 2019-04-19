@@ -87,8 +87,8 @@ public:
 
 
     //for gameover text
-    sphere = new Model( "GameOverWithBG.obj" );
-    shaderID = LoadShaders( "gameoverShader.vert", "gameoverShader.frag" );
+	gameOver = new Model( "GameOver.obj" );
+	GameOverShaderID = LoadShaders( "gameoverShader.vert", "gameoverShader.frag" );
 
   }
 
