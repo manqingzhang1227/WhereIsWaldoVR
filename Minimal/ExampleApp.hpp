@@ -78,7 +78,6 @@ protected:
         startTime != -1 ) {
       std::cout << "Game Over! You got " << points << " points." << std::endl;
       gameStarted = false;
-      points = 0;
 	  setGameOver();
 
     }
@@ -108,8 +107,16 @@ protected:
       }
     }
 
+	string tenth;
+	string one;
+
+
+
+	//std::cout << tenth << "\t"<< one << std::endl;
+	//std::cout << "Current score: " << points << "." << std::endl;
+
     cubeScene->render( projection, glm::inverse( headPose ),
-                       controllerPosition, gameStatus);
+                       controllerPosition, gameStatus, (int)(MAX_TIME_PER_GAME - (ovr_GetTimeInSeconds() - startTime), points);
 
   }
 };

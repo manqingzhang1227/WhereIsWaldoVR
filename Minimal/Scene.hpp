@@ -179,6 +179,13 @@ class ColorCubeScene {
   glm::mat4 gameStartPos;
   //use the gameovershaderid
 
+  std::vector <Model*> nums;
+  glm::mat4 numPos;
+
+  glm::mat4 numStartPos;
+  //use the gameovershaderid
+
+
   std::vector <glm::mat4> axis_positions;
 
 
@@ -190,6 +197,8 @@ public:
 	  loadGameOver();
 
 	  loadGameStart();
+	  //loadNumbers();
+
     // Create a cube of cubes
     {
 
@@ -276,9 +285,30 @@ public:
     }
   }
 
+  void renderNumber(const glm::mat4 &projection, const glm::mat4 &view,
+	  const glm::vec3 &controllerPosition, int status, int timeLeft, int score) {
+	  string tenth, one;
+	  if (status == 1) {
+		  tenth = std::to_string(timeLeft / 10);
+		  one = std::to_string(timeLeft % 10);
+	  }
+	  else if (status == 2) {
+		  tenth = std::to_string(score / 10);
+		  one = std::to_string(score % 10);
+	  }
+	  glm::mat4 NumberTransform = numPos
+		  * glm::translate(glm::mat4(1.0f), vec3(3.5, -13, 1))
+		  * glm::scale(glm::mat4(1.0f), vec3(20, 20, 1))
+		  * glm::translate(glm::mat4(1.0f), vec3(-0.5, 1, -10))
+		  * glm::scale(glm::mat4(1.0f), vec3(0.01))
+		  * glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), vec3(0, 0, 1));
+
+	  int tenthIndex = //TODO start here, render accordigng to the number, remember to call this func in render()
+	  gameOver->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
+  }
 
   void render( const glm::mat4 &projection, const glm::mat4 &view,
-               const glm::vec3 &controllerPosition, int status) {
+               const glm::vec3 &controllerPosition, int status, int timeLeft, int score) {
 
 	  renderAxis(projection, view, controllerPosition);
 	  if (status == 0) {
@@ -300,6 +330,7 @@ public:
 			  glm::translate(glm::mat4(1.0f), controllerPosition) *
 			  glm::scale(glm::mat4(1.0f), vec3(0.0175, 0.0175, 0.0175));
 		  sphere->Draw(shaderID, projection, view, controller_transform, 2);
+		  	  renderAxis(projection, view, controllerPosition);
 
 	  }
 	  else if (status == 2) {
@@ -308,6 +339,27 @@ public:
     
 
   }
+
+  void loadNumbers() {
+
+	  for (unsigned int i = 0; i < 10; i++)
+	  {
+		  string fileName = "Number" + std::to_string(i) + ".obj";
+		  nums.push_back(new Model(fileName));
+
+	  }
+	  GameOverShaderID = LoadShaders("gameoverShader.vert", "gameoverShader.frag");
+	  float xpos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+	  float ypos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+	  float zpos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+	  vec3 relativePosition = vec3(1, 1, 1);
+	  glm::mat4 numPos =
+		  glm::translate(glm::mat4(1.0f), relativePosition)
+		  //*glm::scale(glm::mat4(1.0f), vec3(0.05f))
+		  ;
+
+  }
+
 
   void loadGameOver() {
 	  //for gameover text
