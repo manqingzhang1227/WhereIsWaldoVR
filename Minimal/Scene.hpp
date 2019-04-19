@@ -202,13 +202,14 @@ public:
                           const glm::vec3 &controllerPosition) {
     glm::mat4 gameStartTransform =
       gameStartPos
-      * glm::translate(glm::mat4(1.0f), vec3(3.5, -13, 1))
-      * glm::scale(glm::mat4(1.0f), vec3(20, 20, 1))
-      * glm::translate(glm::mat4(1.0f), vec3(-0.5, 1, -10))
-      * glm::scale(glm::mat4(1.0f), vec3(0.01))
+		* glm::scale(glm::mat4(1.0f), vec3(0.05, 0.05, 0.005))
+		* glm::translate(glm::mat4(1.0f), vec3(-30, 30, -500))
+      //* glm::scale(glm::mat4(1.0f), vec3(10, 10, 1))
+      //* glm::translate(glm::mat4(1.0f), vec3(-0.5, 1, -10))
+      //* glm::scale(glm::mat4(1.0f), vec3(0.01))
       * glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), vec3(0, 0, 1));
 
-    gameStart->Draw(GameOverShaderID, projection, view, gameOverTransform, -1);
+    gameStart->Draw(GameOverShaderID, projection, view, gameStartTransform, -1);
   }
 
   void renderGrid(const glm::mat4 &projection, const glm::mat4 &view,
@@ -245,13 +246,14 @@ public:
 
 	  renderAxis(projection, view, controllerPosition);
 
-    if( status == 0 ) {
-      renderStartText(projection, view, controllerPosition);
+    if( status <= 1 ) {
+		if (status == 0) {
+			renderStartText(projection, view, controllerPosition);
+		}
+	  renderGrid(projection, view, controllerPosition);
+	  renderController(projection, view, controllerPosition);
     }
-    else if (status == 1) {
-		  renderGrid(projection, view, controllerPosition);
-		  renderController(projection, view, controllerPosition);
-	  }
+    
 	  else if (status == 2){
 		  renderGameOverText(projection, view, controllerPosition);
 	  }
