@@ -286,7 +286,7 @@ public:
   void render( const glm::mat4 &projection, const glm::mat4 &view,
                const glm::vec3 &controllerPosition, int status, int timeLeft, int score ) {
 
-    renderAxis( projection, view, controllerPosition );
+    //renderAxis( projection, view, controllerPosition );
 
 
     if( status == 0 ) {
@@ -308,7 +308,7 @@ public:
         glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
         glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
       sphere->Draw( shaderID, projection, view, controller_transform, 2 );
-      renderAxis( projection, view, controllerPosition );
+      //renderAxis( projection, view, controllerPosition );
 
       renderNumber( projection, view, controllerPosition, timeLeft, status );
 
