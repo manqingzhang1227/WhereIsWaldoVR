@@ -25,7 +25,7 @@
 
 #include "stb_image.h"
 
-//#include "text.h"
+#include "text.h"
 
 
 class GameOverScene {
