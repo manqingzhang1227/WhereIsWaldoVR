@@ -261,7 +261,7 @@ public:
 
 
   void render( const glm::mat4 &projection, const glm::mat4 &view,
-               const glm::vec3 &controllerPosition ) {
+               const glm::vec3 &controllerPosition, int status) {
 
     for( int i = 0; i < instanceCount; i++ ) {
       glm::mat4 toWorld = instance_positions[i] *

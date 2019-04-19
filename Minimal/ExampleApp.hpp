@@ -24,11 +24,16 @@ class ExampleApp : public RiftApp {
   int points;
 
 
+  int gameStatus;
+  const unsigned int MAX_TIME_PER_GAME{ 5 };
+
 public:
   ExampleApp() {
     points = 0;
     startTime = -1;
     gameStarted = false;
+	gameStatus = 0;
+
   }
 
 protected:
@@ -46,7 +51,13 @@ protected:
   void shutdownGl() override {
     cubeScene.reset();
   }
+  void setStartGame() {
+	  gameStatus = 1;
+  }
 
+  void setGameOver() {
+	  gameStatus = 2;
+  }
 
   void renderScene( const glm::mat4 &projection,
                     const glm::mat4 &headPose ) override {
@@ -57,13 +68,19 @@ protected:
       startTime = ovr_GetTimeInSeconds();
       gameStarted = true;
       std::cout << " starting at time  " << ovr_GetTimeInSeconds() << std::endl;
-    }
+	  setStartGame();
+	  points = 0;
+
+	
+	}
     //std::cout << ovr_GetTimeInSeconds() << " vs " << startTime << std::endl;
     if( ovr_GetTimeInSeconds() - startTime > 60.0 && gameStarted &&
         startTime != -1 ) {
       std::cout << "Game Over! You got " << points << " points." << std::endl;
       gameStarted = false;
       points = 0;
+	  setGameOver();
+
     }
 
 
@@ -92,7 +109,7 @@ protected:
     }
 
     cubeScene->render( projection, glm::inverse( headPose ),
-                       controllerPosition );
+                       controllerPosition, gameStatus);
 
   }
 };
