@@ -37,6 +37,10 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="textShader.vert">
+    <None Include="textureShader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="textureShader.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -78,6 +82,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="text.h">
+
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -85,5 +90,8 @@
     <Font Include="arial.ttf">
       <Filter>Resource Files</Filter>
     </Font>
+    <Image Include="waldo.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

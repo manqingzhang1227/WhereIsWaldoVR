@@ -62,6 +62,7 @@ protected:
 	proj = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
 	 toWorld = glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 10.0f));
 
+    //cubeScene = std::shared_ptr <ColorCubeScene>( new ColorCubeScene() );
   }
 
 

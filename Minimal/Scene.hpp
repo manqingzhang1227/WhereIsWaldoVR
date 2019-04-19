@@ -19,10 +19,13 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Mesh.h"
 #include "Model.h"
 
-#include "text.h"
+#include <soil.h>
+
+#include "stb_image.h"
+
+//#include "text.h"
 
 
 class GameOverScene {
@@ -275,6 +278,8 @@ class ColorSphereSceneWithText {
 
 
   Model* sphere;
+  //Text* text;
+
 
 
   GLuint lightedInstanceIndex;
@@ -317,6 +322,8 @@ public:
     // Shader Program
     shaderID = LoadShaders( "shader.vert", "shader.frag" );
 
+
+    //textShaderID = LoadShaders( "textShader.vert", "textShader.frag" );
 
   }
 
@@ -367,6 +374,7 @@ public:
     sphere->Draw( shaderID, projection, view, controller_transform, 2 );
 
 
+
   }
 
 
@@ -383,8 +391,9 @@ class ColorCubeScene {
   GLuint instanceCount;
 
 
-  GLuint shaderID;
+  GLuint shaderID, textureShaderID, textureId;
 
+  GLint uniform_texture,attribute_texture;
 
   Model* sphere;
 
@@ -432,6 +441,32 @@ public:
     // Shader Program
     shaderID = LoadShaders( "shader.vert", "shader.frag" );
 
+	textureShaderID = LoadShaders("textureShader.vert", "textureShader.frag");
+
+	glActiveTexture(GL_TEXTURE0);
+
+	//Setting up textures
+	unsigned char * data;
+	int width, height, numChannels;
+
+	data = stbi_load("waldo.jpg", &width, &height, &numChannels, STBI_rgb_alpha);
+	if (!data) {
+	  throw std::runtime_error("Cannot load file waldo.jpg");
+	}
+
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	// textureId = SOIL_load_OGL_texture("waldo.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS);
+	uniform_texture = glGetUniformLocation(textureShaderID, "tex"); 
+	glUniform1i(uniform_texture, 0);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	
   }
 
 
@@ -467,8 +502,13 @@ public:
     for( unsigned int i = 0; i < instanceCount; i++ ) {
       glm::mat4 toWorld = instance_positions[i] *
                           glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
-      sphere->Draw( shaderID, projection, view, toWorld,
-                    ( lightedInstanceIndex == i ) );
+	  if (lightedInstanceIndex == i) {
+		  sphere->Draw(textureShaderID, projection, view, toWorld, (lightedInstanceIndex == i));
+	  }
+	  else {
+		  sphere->Draw(shaderID, projection, view, toWorld,
+			  (lightedInstanceIndex == i));
+	  }
     }
     glm::mat4 controller_transform =
       glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
