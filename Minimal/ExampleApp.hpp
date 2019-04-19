@@ -74,7 +74,7 @@ protected:
 	
 	}
     //std::cout << ovr_GetTimeInSeconds() << " vs " << startTime << std::endl;
-    if( ovr_GetTimeInSeconds() - startTime > 60.0 && gameStarted &&
+    if( ovr_GetTimeInSeconds() - startTime > MAX_TIME_PER_GAME && gameStarted &&
         startTime != -1 ) {
       std::cout << "Game Over! You got " << points << " points." << std::endl;
       gameStarted = false;
@@ -99,7 +99,7 @@ protected:
       //std::cout << "Touched Trigger Button" << std::endl;
       if( cubeScene->checkOverlap( controllerPosition ) && gameStarted ) {
         std::cout << "1 Point Added" << std::endl;
-        std::cout << "You have " << 60 - ( ovr_GetTimeInSeconds() - startTime )
+        std::cout << "You have " << MAX_TIME_PER_GAME - ( ovr_GetTimeInSeconds() - startTime )
                   << " seconds left." << std::endl;
         std::cout << "Current score: " << points << "." << std::endl;
         std::cout << std::endl;
