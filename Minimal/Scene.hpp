@@ -53,6 +53,11 @@ class GameOverScene {
   glm::mat4 gameOverPos;
   GLuint GameOverShaderID;
 
+
+  Model* gameStart;
+  glm::mat4 gameStartPos;
+  //use the gameovershaderid
+
   std::vector <glm::mat4> axis_positions;
 
 
@@ -65,6 +70,7 @@ public:
 
 	  loadGameOver();
 
+	  loadGameStart();
     
   }
 
@@ -87,6 +93,19 @@ public:
 		  glm::translate(glm::mat4(1.0f), relativePosition)
 		  //*glm::scale(glm::mat4(1.0f), vec3(0.05f))
 		  ;
+  }
+
+  void loadGameStart() {
+    gameStart = new Model("PullTheTriggerToStartTheGame.obj");
+    GameOverShaderID = LoadShaders("gameoverShader.vert", "gameoverShader.frag");
+    float xpos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+    float ypos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+    float zpos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+    vec3 relativePosition = vec3(1, 1, 1);
+    glm::mat4 gameStartPos =
+      glm::translate(glm::mat4(1.0f), relativePosition)
+    //*glm::scale(glm::mat4(1.0f), vec3(0.05f))
+    ;
   }
 
   void loadAxis() {
@@ -179,6 +198,19 @@ public:
 	 	  gameOver->Draw(GameOverShaderID, projection, view, gameOverTransform, -1);
   }
 
+  void renderStartText(const glm::mat4 &projection, const glm::mat4 &view,
+                          const glm::vec3 &controllerPosition) {
+    glm::mat4 gameStartTransform =
+      gameStartPos
+      * glm::translate(glm::mat4(1.0f), vec3(3.5, -13, 1))
+      * glm::scale(glm::mat4(1.0f), vec3(20, 20, 1))
+      * glm::translate(glm::mat4(1.0f), vec3(-0.5, 1, -10))
+      * glm::scale(glm::mat4(1.0f), vec3(0.01))
+      * glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), vec3(0, 0, 1));
+
+    gameStart->Draw(GameOverShaderID, projection, view, gameOverTransform, -1);
+  }
+
   void renderGrid(const glm::mat4 &projection, const glm::mat4 &view,
 	  const glm::vec3 &controllerPosition) {
 	  for (unsigned int i = 0; i < instanceCount; i++) {
@@ -213,12 +245,14 @@ public:
 
 	  renderAxis(projection, view, controllerPosition);
 
-	  if (status < 2) {
+    if( status == 0 ) {
+      renderStartText(projection, view, controllerPosition);
+    }
+    else if (status == 1) {
 		  renderGrid(projection, view, controllerPosition);
 		  renderController(projection, view, controllerPosition);
-
 	  }
-	  else {
+	  else if (status == 2){
 		  renderGameOverText(projection, view, controllerPosition);
 	  }
   }
