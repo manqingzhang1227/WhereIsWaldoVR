@@ -124,9 +124,12 @@ public:
     else if( isHighlighted == 1 ) {
       glUniform1i( ubooleanHighlight, 1 );
     }
-    else {
+    else if (isHighlighted == 2) {
       glUniform1i( ubooleanHighlight, 2 );
     }
+	else {
+	glUniform1i(ubooleanHighlight, 3);
+	}
 
     glBindVertexArray( VAO );
     glDrawElements( GL_TRIANGLES, ( GLsizei ) indices.size(), GL_UNSIGNED_INT,

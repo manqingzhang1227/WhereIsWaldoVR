@@ -34,6 +34,10 @@ class ExampleApp : public RiftApp {
   double timeReference;
 
 
+  int gameStatus;
+  const unsigned int MAX_TIME_PER_GAME{ 5 };
+
+
 public:
   ExampleApp() {
     points = 0;
@@ -41,6 +45,7 @@ public:
 	timeReference = -1;
 	gameStarted = false;
 	justStarted = true;
+	gameStatus = 0;
   }
 
 protected:
@@ -64,7 +69,13 @@ protected:
     cubeScene.reset();
   }
 
+  void setStartGame() {
+	  gameStatus = 1;
+  }
 
+  void setGameOver() {
+	  gameStatus = 2;
+  }
   void renderScene( const glm::mat4 &projection,
                     const glm::mat4 &headPose ) override {
     // Get Current Input State
@@ -76,15 +87,16 @@ protected:
 		gameStarted = true;
 	  justStarted = false;
 	  points = 0;
-
+	  setStartGame();
     }
+
     //std::cout << ovr_GetTimeInSeconds() << " vs " << startTime << std::endl;
-    if( ovr_GetTimeInSeconds() - startTime > 60.0 && gameStarted &&
+    if( ovr_GetTimeInSeconds() - startTime > MAX_TIME_PER_GAME && gameStarted &&
         startTime != -1 ) {
       std::cout << "Game Over! You got " << points << " points." << std::endl;
       gameStarted = false;
 
-	  
+	  setGameOver();
 		  
 	  
     }
@@ -109,7 +121,7 @@ protected:
       //std::cout << "Touched Trigger Button" << std::endl;
       if( cubeScene->checkOverlap( controllerPosition ) && gameStarted ) {
         std::cout << "1 Point Added" << std::endl;
-        std::cout << "You have " << 60 - ( ovr_GetTimeInSeconds() - startTime )
+        std::cout << "You have " << MAX_TIME_PER_GAME - ( ovr_GetTimeInSeconds() - startTime )
                   << " seconds left." << std::endl;
 		
 		
@@ -135,13 +147,13 @@ protected:
 //		text->RenderText(textShaderID, score, 350.0f, 400.0, 0.05f,
 //			proj, glm::inverse(headPose), toWorld);
 
-		string timeLeft = "You have " + std::to_string(int(60 - (ovr_GetTimeInSeconds() - startTime))) + " seconds left.";
+		string timeLeft = "You have " + std::to_string(int(MAX_TIME_PER_GAME - (ovr_GetTimeInSeconds() - startTime))) + " seconds left.";
 //		text->RenderText(textShaderID, timeLeft, 350.0f, 300.0f, 0.05f,
 //			proj, glm::inverse(headPose), toWorld);
 	}
 
     cubeScene->render( projection, glm::inverse( headPose ),
-                       controllerPosition );
+                       controllerPosition, gameStatus );
 
 
 	//render the text

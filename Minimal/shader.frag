@@ -31,5 +31,9 @@ void main()
 		color = vec3(1,1,0);
 	}
 
+	if( isHighlighted == 3) {
+		color = vec3(0,0,0);
+	}
+
     fragColor = vec4(color, 1.0);
 }

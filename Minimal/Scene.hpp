@@ -53,49 +53,97 @@ class GameOverScene {
   glm::mat4 gameOverPos;
   GLuint GameOverShaderID;
 
+  std::vector <glm::mat4> axis_positions;
+
+
 public:
   GameOverScene() {
 
-    sphere = new Model( "sphere.obj" );
+	  loadSphere();
 
-    for( float z = 0; z < GRID_SIZE; z++ ) {
-      for( float y = 0; y < GRID_SIZE; y++ ) {
-        for( float x = 0; x < GRID_SIZE; x++ ) {
-          float xpos = ( x - ( GRID_SIZE / 2.0f ) ) * SPACING;
-          float ypos = ( y - ( GRID_SIZE / 2.0f ) ) * SPACING;
-          float zpos = ( z - ( GRID_SIZE / 2.0f ) ) * SPACING;
-          vec3 relativePosition = vec3( xpos, ypos, zpos );
-          if( relativePosition == vec3( 0 ) ) {
-            continue;
-          }
-          glm::mat4 transfMat =
-            glm::translate( glm::mat4( 1.0f ), relativePosition ) *
-            glm::scale( glm::mat4( 1.0f ), vec3( 0.035, 0.035, 0.035 ) );
-          instance_positions.push_back( transfMat );
-          gameOverPos = transfMat;  //TODO change
-        }
-      }
-    }
+	  loadAxis();
 
+	  loadGameOver();
 
-    instanceCount = ( GLuint ) instance_positions.size();
-    lightedInstanceIndex = rand() % instanceCount;         // in the range 0 to instanceCount
-
-
-    // Shader Program
-    shaderID = LoadShaders( "shader.vert", "shader.frag" );
-
-
-    //for gameover text
-	gameOver = new Model( "GameOver.obj" );
-	GameOverShaderID = LoadShaders( "gameoverShader.vert", "gameoverShader.frag" );
-
+    
   }
 
 
   void highlightRandomSphere() {
     lightedInstanceIndex =
       rand() % instanceCount;         // in the range 0 to instanceCount
+  }
+
+
+  void loadGameOver() {
+	  //for gameover text
+	  gameOver = new Model("GameOver.obj");
+	  GameOverShaderID = LoadShaders("gameoverShader.vert", "gameoverShader.frag");
+	  float xpos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+	  float ypos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+	  float zpos = (GRID_SIZE - 1 - (GRID_SIZE / 2.0f)) * SPACING;
+	  vec3 relativePosition = vec3(1, 1, 1);
+	  glm::mat4 gameOverPos =
+		  glm::translate(glm::mat4(1.0f), relativePosition)
+		  //*glm::scale(glm::mat4(1.0f), vec3(0.05f))
+		  ;
+  }
+
+  void loadAxis() {
+	  sphere = new Model("sphere.obj");
+
+	  //for (float z = 0; z < GRID_SIZE; z++) {
+		  //for (float y = -5; y < 5; y++) {
+			  //for (float x = -5; x < 5; x++) {
+				  //float xpos = (x - (GRID_SIZE / 2.0f)) * SPACING;
+				  //float ypos = (y - (GRID_SIZE / 2.0f)) * SPACING;
+				  //float zpos = (z - (GRID_SIZE / 2.0f)) * SPACING;
+				  //vec3 relativePosition = vec3(xpos, ypos, zpos);
+				  //if (relativePosition == vec3(0)) {
+					//  continue;
+				  //}
+				  glm::mat4 transfMat =
+					  glm::translate(glm::mat4(1.0f), vec3(0, 0, 0)) *
+					  glm::scale(glm::mat4(1.0f), vec3(0.07, 0.07, 0.07));
+				  axis_positions.push_back(transfMat);
+
+				  
+			  //}
+		  //}
+	 // }
+
+	  // Shader Program
+	  shaderID = LoadShaders("shader.vert", "shader.frag");
+  }
+
+  void loadSphere() {
+	  sphere = new Model("sphere.obj");
+
+	  for (float z = 0; z < GRID_SIZE; z++) {
+		  for (float y = 0; y < GRID_SIZE; y++) {
+			  for (float x = 0; x < GRID_SIZE; x++) {
+				  float xpos = (x - (GRID_SIZE / 2.0f)) * SPACING;
+				  float ypos = (y - (GRID_SIZE / 2.0f)) * SPACING;
+				  float zpos = (z - (GRID_SIZE / 2.0f)) * SPACING;
+				  vec3 relativePosition = vec3(xpos, ypos, zpos);
+				  if (relativePosition == vec3(0)) {
+					  continue;
+				  }
+				  glm::mat4 transfMat =
+					  glm::translate(glm::mat4(1.0f), relativePosition) *
+					  glm::scale(glm::mat4(1.0f), vec3(0.035, 0.035, 0.035));
+				  instance_positions.push_back(transfMat);
+			  }
+		  }
+	  }
+
+
+	  instanceCount = (GLuint)instance_positions.size();
+	  lightedInstanceIndex = rand() % instanceCount;         // in the range 0 to instanceCount
+
+
+	  // Shader Program
+	  shaderID = LoadShaders("shader.vert", "shader.frag");
   }
 
 
@@ -118,23 +166,61 @@ public:
     }
   }
 
+  void renderGameOverText(const glm::mat4 &projection, const glm::mat4 &view,
+	  const glm::vec3 &controllerPosition) {
+	  glm::mat4 gameOverTransform =
+		  gameOverPos
+		  * glm::translate(glm::mat4(1.0f), vec3(3.5, -13, 1))
+		  * glm::scale(glm::mat4(1.0f), vec3(20, 20, 1))
+		  * glm::translate(glm::mat4(1.0f), vec3(-0.5, 1, -10))
+		  * glm::scale(glm::mat4(1.0f), vec3(0.01))
+		  * glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), vec3(0, 0, 1));
 
-  void render( const glm::mat4 &projection, const glm::mat4 &view,
-               const glm::vec3 &controllerPosition ) {
+	 	  gameOver->Draw(GameOverShaderID, projection, view, gameOverTransform, -1);
+  }
 
-    for( unsigned int i = 0; i < instanceCount; i++ ) {
-      glm::mat4 toWorld = instance_positions[i] *
-                          glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
-      sphere->Draw( shaderID, projection, view, toWorld,
-                    ( lightedInstanceIndex == i ) );
-    }
-    glm::mat4 controller_transform =
-      glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
-      glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
-    sphere->Draw( shaderID, projection, view, controller_transform, 2 );
+  void renderGrid(const glm::mat4 &projection, const glm::mat4 &view,
+	  const glm::vec3 &controllerPosition) {
+	  for (unsigned int i = 0; i < instanceCount; i++) {
+		  glm::mat4 toWorld = instance_positions[i] *
+			  glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+		  sphere->Draw(shaderID, projection, view, toWorld,
+			  (lightedInstanceIndex == i));
+	  }
+  }
 
-    //render
-    gameOver->Draw( GameOverShaderID, projection, view, controller_transform, -1 );
+  void renderAxis(const glm::mat4 &projection, const glm::mat4 &view,
+	  const glm::vec3 &controllerPosition) {
+	  for (unsigned int i = 0; i < axis_positions.size(); i++) {
+		  glm::mat4 toWorld = axis_positions[i] *
+			  glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+		  sphere->Draw(shaderID, projection, view, toWorld,
+			  3);
+	  }
+  }
+
+  void renderController(const glm::mat4 &projection, const glm::mat4 &view,
+	  const glm::vec3 &controllerPosition) {
+	  glm::mat4 controller_transform =
+		  glm::translate(glm::mat4(1.0f), controllerPosition) *
+		  glm::scale(glm::mat4(1.0f), vec3(0.0175, 0.0175, 0.0175));
+	  sphere->Draw(shaderID, projection, view, controller_transform, 2);
+  }
+
+  void render(const glm::mat4 &projection, const glm::mat4 &view,
+	  const glm::vec3 &controllerPosition, int status) {
+
+
+	  renderAxis(projection, view, controllerPosition);
+
+	  if (status < 2) {
+		  renderGrid(projection, view, controllerPosition);
+		  renderController(projection, view, controllerPosition);
+
+	  }
+	  else {
+		  renderGameOverText(projection, view, controllerPosition);
+	  }
   }
 };
 
@@ -230,7 +316,7 @@ public:
 
     //render the spheres chunk
 
-    for( int i = 0; i < instanceCount; i++ ) {
+    for( unsigned int i = 0; i < instanceCount; i++ ) {
       glm::mat4 toWorld = instance_positions[i] *
                           glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
       sphere->Draw( shaderID, projection, view, toWorld,
@@ -352,8 +438,6 @@ public:
       glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
       glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
     sphere->Draw( shaderID, projection, view, controller_transform, 2 );
-
-    //render the text
 
   }
 
