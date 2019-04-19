@@ -201,6 +201,14 @@ class ColorCubeScene {
   std::vector <glm::mat4> axis_positions;
 
 
+  Model* scoreText;
+  glm::mat4 scoreTextPos;
+  //use the gameovershaderid
+
+  Model* timeLeftText;
+  glm::mat4 timeLeftTextPos;
+  //use the gameovershaderid
+
 public:
   ColorCubeScene() {
 
@@ -210,6 +218,8 @@ public:
 
     loadGameStart();
     loadNumbers();
+    loadScoreText();
+    loadTimeLeftText();
 
     // Create a cube of cubes
     {
@@ -272,6 +282,49 @@ public:
   }
 
 
+
+  void render( const glm::mat4 &projection, const glm::mat4 &view,
+               const glm::vec3 &controllerPosition, int status, int timeLeft, int score ) {
+
+    renderAxis( projection, view, controllerPosition );
+
+
+    if( status == 0 ) {
+      renderStartText( projection, view, controllerPosition );
+    }
+    if( status == 1 ) {
+      for( int i = 0; i < instanceCount; i++ ) {
+        glm::mat4 toWorld = instance_positions[i] *
+                            glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
+        if( lightedInstanceIndex == i ) {
+          sphere->Draw( textureShaderID, projection, view, toWorld, ( lightedInstanceIndex == i ) );
+        }
+        else {
+          sphere->Draw( shaderID, projection, view, toWorld,
+                        ( lightedInstanceIndex == i ) );
+        }
+      }
+      glm::mat4 controller_transform =
+        glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
+        glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
+      sphere->Draw( shaderID, projection, view, controller_transform, 2 );
+      renderAxis( projection, view, controllerPosition );
+
+      renderNumber( projection, view, controllerPosition, timeLeft, status );
+
+
+    }
+    else if( status == 2 ) {
+      renderGameOverText( projection, view, controllerPosition );
+      renderNumber( projection, view, controllerPosition, score,  status );
+    }
+
+
+  }
+
+
+
+
   void highlightRandomSphere() {
     lightedInstanceIndex =
       rand() % instanceCount;         // in the range 0 to instanceCount
@@ -298,44 +351,7 @@ public:
   }
 
 
-  
 
-  void render( const glm::mat4 &projection, const glm::mat4 &view,
-               const glm::vec3 &controllerPosition, int status, int timeLeft, int score ) {
-
-    renderAxis( projection, view, controllerPosition );
-    if( status == 0 ) {
-      renderStartText( projection, view, controllerPosition );
-    }
-    if( status == 1 ) {
-      for( int i = 0; i < instanceCount; i++ ) {
-        glm::mat4 toWorld = instance_positions[i] *
-                            glm::scale( glm::mat4( 1.0f ), glm::vec3( 0.5f ) );
-        if( lightedInstanceIndex == i ) {
-          sphere->Draw( textureShaderID, projection, view, toWorld, ( lightedInstanceIndex == i ) );
-        }
-        else {
-          sphere->Draw( shaderID, projection, view, toWorld,
-                        ( lightedInstanceIndex == i ) );
-        }
-      }
-      glm::mat4 controller_transform =
-        glm::translate( glm::mat4( 1.0f ), controllerPosition ) *
-        glm::scale( glm::mat4( 1.0f ), vec3( 0.0175, 0.0175, 0.0175 ) );
-      sphere->Draw( shaderID, projection, view, controller_transform, 2 );
-      renderAxis( projection, view, controllerPosition );
-
-      renderNumber( projection, view, controllerPosition, timeLeft );
-
-
-    }
-    else if( status == 2 ) {
-      renderGameOverText( projection, view, controllerPosition );
-      renderNumber( projection, view, controllerPosition, score );
-    }
-
-
-  }
 
 
 
@@ -374,6 +390,34 @@ public:
     ;
   }
 
+
+  void loadScoreText() {
+    //for gameover text
+    scoreText = new Model( "Score.obj" );
+    GameOverShaderID = LoadShaders( "gameoverShader.vert", "gameoverShader.frag" );
+    float xpos = ( GRID_SIZE - 1 - ( GRID_SIZE / 2.0f ) ) * SPACING;
+    float ypos = ( GRID_SIZE - 1 - ( GRID_SIZE / 2.0f ) ) * SPACING;
+    float zpos = ( GRID_SIZE - 1 - ( GRID_SIZE / 2.0f ) ) * SPACING;
+    vec3 relativePosition = vec3( 1, 1, 1 );
+    glm::mat4 scoreTextPos =
+      glm::translate( glm::mat4( 1.0f ), relativePosition )
+    //*glm::scale(glm::mat4(1.0f), vec3(0.05f))
+    ;
+  }
+
+  void loadTimeLeftText() {
+    //for gameover text
+    scoreText = new Model( "TimeLeft.obj" );
+    GameOverShaderID = LoadShaders( "gameoverShader.vert", "gameoverShader.frag" );
+    float xpos = ( GRID_SIZE - 1 - ( GRID_SIZE / 2.0f ) ) * SPACING;
+    float ypos = ( GRID_SIZE - 1 - ( GRID_SIZE / 2.0f ) ) * SPACING;
+    float zpos = ( GRID_SIZE - 1 - ( GRID_SIZE / 2.0f ) ) * SPACING;
+    vec3 relativePosition = vec3( 1, 1, 1 );
+    glm::mat4 timeLeftPos =
+      glm::translate( glm::mat4( 1.0f ), relativePosition )
+    //*glm::scale(glm::mat4(1.0f), vec3(0.05f))
+    ;
+  }
 
   void loadGameStart() {
     gameStart = new Model( "PullTheTriggerToStartTheGame.obj" );
@@ -511,7 +555,7 @@ public:
 
 
   void renderNumber(const glm::mat4 &projection, const glm::mat4 &view,
-	  const glm::vec3 &controllerPosition, int numToRender) {
+	  const glm::vec3 &controllerPosition, int numToRender, int status) {
 	  //	  string tenth, one;
 	  //	  if (status == 1) {
 	  //		  tenth = std::to_string(timeLeft / 10);
@@ -521,6 +565,8 @@ public:
 	  //		  tenth = std::to_string(score / 10);
 	  //		  one = std::to_string(score % 10);
 	  //	  }
+
+
 	  glm::mat4 NumberTransform = numPos
 		  * glm::translate(glm::mat4(1.0f), vec3(0, -3, -10))
 		  * glm::scale(glm::mat4(1.0f), vec3(10, 10, 1))
@@ -531,14 +577,23 @@ public:
 
 	  int tenthIndex = numToRender / 10;
 	  int oneIndex = numToRender % 10;
-	  //TODO start here, render accordigng to the number, remember to call this
-	  // func in render()
 
 	  nums[tenthIndex]->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
 
 	  NumberTransform = NumberTransform
 		  * glm::translate(glm::mat4(1.0f), vec3(0, 25, 0));
+
 	  nums[oneIndex]->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
+
+    NumberTransform = NumberTransform
+                      * glm::translate(glm::mat4(1.0f), vec3(0, 30, 0));
+
+    if( status == 1 ) {
+      timeLeftText->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
+    }
+    else {
+      scoreText->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
+    }
   }
 
 
