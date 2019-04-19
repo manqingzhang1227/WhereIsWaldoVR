@@ -219,7 +219,7 @@ public:
     loadGameStart();
     loadNumbers();
     loadScoreText();
-    loadTimeLeftText();
+    //loadTimeLeftText();
 
     // Create a cube of cubes
     {
@@ -568,7 +568,7 @@ public:
 
 
 	  glm::mat4 NumberTransform = numPos
-		  * glm::translate(glm::mat4(1.0f), vec3(0, -3, -10))
+		  * glm::translate(glm::mat4(1.0f), vec3(2, -3, -10))
 		  * glm::scale(glm::mat4(1.0f), vec3(10, 10, 1))
 		  * glm::translate(glm::mat4(1.0f), vec3(-0.5, 1, -10))
 		  * glm::scale(glm::mat4(1.0f), vec3(0.01))
@@ -586,10 +586,10 @@ public:
 	  nums[oneIndex]->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
 
     NumberTransform = NumberTransform
-                      * glm::translate(glm::mat4(1.0f), vec3(0, 30, 0));
+                      * glm::translate(glm::mat4(1.0f), vec3(0, -70, 0));
 
     if( status == 1 ) {
-      timeLeftText->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
+      //timeLeftText->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
     }
     else {
       scoreText->Draw(GameOverShaderID, projection, view, NumberTransform, -1);
